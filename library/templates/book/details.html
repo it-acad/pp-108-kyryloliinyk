@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ book.name }}
+{% endblock %}
+
+{% block content %}
+<h1>{{ book.name }}</h1>
+{% if user.is_authenticated %}
+    <form method="post" action="{% url 'order:create' %}">
+        {% csrf_token %}
+        <input type="hidden" name="book_id" value="{{ book.id }}">
+        <button type="submit">Order</button>
+    </form>
+{% endif %}
+<h2>Authors:</h2>
+{% if book.authors %}
+    <ul>
+        {% for author in book.authors.all %}
+            <li>{{author.name}} {{author.surname}}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+<h2>Count: {{ book.count }}</h2>
+<h2>DEscription:</h2>
+<p>{{ book.description }}</p>
+{% endblock %}

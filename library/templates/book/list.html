@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}
+Books
+{% endblock %}
+
+{% block content %}
+<h1>Books:</h1>
+
+<form method="post" action="{% url 'book:search' %}">
+    {% csrf_token %}
+    <label for="author">Filter by Author:</label>
+    <select name="author" id="author">
+        <option value="">--Select an Author--</option>
+        {% for author in authors %}
+            <option value="{{ author.id }}">{{ author.name }} {{ author.surname }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
+{% if books %}
+    <ul>
+    {% for book in books %}
+                <li><a href="{% url 'book:details' book.id %}">{{ book.name }}</a></li>
+            {% endfor %}
+    </ul>
+{% else %}
+<h1>No books found.</h1>
+{% endif %}
+{% endblock %}

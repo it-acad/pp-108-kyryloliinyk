@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ user.first_name }}
+{% endblock %}
+
+{% block content %}
+<h1>{{ user.first_name }} {{ user.middle_name }} {{ user.last_name }}</h1>
+<ul>
+    <li>Email: {{ user.email }}</li>
+    <li>Role: {{ user.get_role_display }}</li>
+    <li>Active: {{ user.is_active }}</li>
+</ul>
+{% if user.role == 0%}
+    <h3>Ordered books:</h3>
+{% else %}
+    <h2>All created orders:</h2>
+{% endif %}
+{% if has_orders %}
+    <ul>
+        {% for order in orders %}
+            {% if user.role == 1 %}
+                <li>
+                    {{ order.book.name }} - ordered by - {{ order.user.first_name }}
+                    | <a href="{% url 'order:delete' id=order.id %}">Cancel</a>
+                </li>
+            {% else %}
+                <li>{{ order.book.name }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No orders created.</p>
+{% endif %}
+{% if user.role == 1 %}
+    <h2>Authors:</h2>
+{% if authors %}
+<ul>
+    {% for author in authors %}
+        {% if author.books.all %}
+            <li><a href="{% url 'author:details' author.id %}">{{ author.name }} {{ author.surname }}</a></li>
+        {% else %}
+            <li>
+                {{ author.name }} {{ author.surname }} |
+                <a href="{% url 'author:delete' author.id %}">Delete</a>
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+{% else %}
+    <p>No authors found.</p>
+{% endif %}
+{% endif %}
+{% if user.is_authenticated and user.role == 1 %}
+<h3>Create author:</h3>
+<form action="{% url 'author:create' %}" method="post">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="Name" required>
+    <input type="text" name="surname" placeholder="Surname" required>
+    <input type="text" name="patronymic" placeholder="Patronymic" required>
+    <input type="submit" value="Submit">
+</form>
+{% endif %}
+{% if user.role == 1 %}
+    <h2>All registered users:</h2>
+{% endif %}
+{% if users %}
+<ul>
+{% for user in users %}
+    <li><a href="{% url 'authentication:user_details' user.id %}">{{ user.first_name }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

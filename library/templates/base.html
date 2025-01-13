@@ -1,0 +1,35 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>
+    {% block title %}
+    Library
+    {% endblock %}
+</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'authentication:logout' id=user.id %}">Sign Out</a></li>
+                <li><a href="{% url 'authentication:user_details' id=user.id %}">My Account</a></li>
+                {% else %}
+                    <li><a href="{% url 'authentication:authenticate' %}">Sign In / Sign Up</a></li>
+                {% endif %}
+                <li><a href="{% url 'home' %}">Home</a></li>
+                {% if user.is_authenticated and user.role == 1 %}
+                <li><a href="{% url 'authentication:user_list' %}">Librarians</a></li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'book:list' %}">Books</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>
