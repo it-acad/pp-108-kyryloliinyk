@@ -5,21 +5,6 @@ from book.models import Book
 
 
 class Order(models.Model):
-    """
-           This class represents an Order. \n
-           Attributes:
-           -----------
-           param book: foreign key Book
-           type book: ForeignKey
-           param user: foreign key CustomUser
-           type user: ForeignKey
-           param created_at: Describes the date when the order was created. Can't be changed.
-           type created_at: int (timestamp)
-           param end_at: Describes the actual return date of the book. (`None` if not returned)
-           type end_at: int (timestamp)
-           param plated_end_at: Describes the planned return period of the book (2 weeks from the moment of creation).
-           type plated_end_at: int (timestamp)
-       """
     book = models.ForeignKey(Book, on_delete=models.CASCADE, default=None)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -27,46 +12,10 @@ class Order(models.Model):
     plated_end_at = models.DateTimeField(default=None)
 
     def __str__(self):
-        """
-        Magic method is redefined to show all information about Book.
-        :return: book id, book name, book description, book count, book authors
-        """
-        if self.end_at == None:
-            return f"\'id\': {self.pk}, " \
-                   f"\'user\': CustomUser(id={self.user.pk})," \
-                   f" \'book\': Book(id={self.book.pk})," \
-                   f" \'created_at\': \'{self.created_at}\'," \
-                   f" \'end_at\': {self.end_at}," \
-                   f" \'plated_end_at\': \'{self.plated_end_at}\'"
-        else:
-            return f"\'id\': {self.pk}, " \
-                   f"\'user\': CustomUser(id={self.user.pk})," \
-                   f" \'book\': Book(id={self.book.pk})," \
-                   f" \'created_at\': \'{self.created_at}\'," \
-                   f" \'end_at\': \'{self.end_at}\'," \
-                   f" \'plated_end_at\': \'{self.plated_end_at}\'"
+        return f'{self.book} ordered by {self.user}'
 
     def __repr__(self):
-        """
-        This magic method is redefined to show class and id of Book object.
-        :return: class, id
-        """
         return f'{self.__class__.__name__}(id={self.id})'
-
-    def to_dict(self):
-        """
-                :return: order id, book id, user id, order created_at, order end_at, order plated_end_at
-                :Example:
-                | {
-                |   'id': 8,
-                |   'book': 8,
-                |   'user': 8',
-                |   'created_at': 1509393504,
-                |   'end_at': 1509393504,
-                |   'plated_end_at': 1509402866,
-                | }
-                """
-        pass
 
     @staticmethod
     def create(user, book, plated_end_at):
