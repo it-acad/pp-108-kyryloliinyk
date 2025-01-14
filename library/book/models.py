@@ -5,6 +5,8 @@ class Book(models.Model):
     name = models.CharField(blank=True, max_length=128)
     description = models.CharField(blank=True, max_length=256)
     count = models.IntegerField(default=10)
+    publication_year = models.PositiveIntegerField(blank=True, null=True)
+    last_issued_date = models.DateField(blank=True, null=True)
     id = models.AutoField(primary_key=True)
 
     def __str__(self):
